@@ -71,7 +71,7 @@ async function change(req, res) {
   if (!currentRoom) {
     return res.status(404).json('Room not found');
   }
-  if (!(currentRoom.users.admin !== user)) {
+  if (!(currentRoom.admin !== user)) {
     return res.status(407).json('Access denied');
   }
 
@@ -83,18 +83,12 @@ async function change(req, res) {
 
     switch (method.type) {
       case 'rename':
-        const changedRoom = await roomsService.change(roomId, method);
 
-        console.log(
-          `ACTIVATE EMITTER | CHANGED ROOM: ${JSON.stringify(changedRoom[0])}`,
-        );
-
-        roomsEmitter.emit('changed', changedRoom[0]); // ✅ ПРАВИЛЬНО
-
-        return res.send(201);
+        roomsEmitter.emit('changed', changedRoom[0]);
+        return res.sendStatus(201);
       case 'delete':
         roomsEmitter.emit('deleted', roomId);
-        return res.send(204);
+        return res.sendStatus(204);
       case 'deleteUser':
         roomsEmitter.emit('changed', changedRoom);
     }
@@ -107,7 +101,7 @@ async function change(req, res) {
 async function crearAll(req, res) {
   await roomsService.crear();
 
-  res.send(204);
+  res.sendStatus(204);
 }
 
 export const roomsController = {

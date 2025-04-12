@@ -65,7 +65,7 @@ async function createNew(req, res) {
 async function crearAll(req, res) {
   await usersService.crear();
 
-  res.send(204);
+  res.sendStatus(204);
 }
 
 export const usersController = {
