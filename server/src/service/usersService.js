@@ -1,4 +1,5 @@
-import { User } from '../models/user.js';
+import { User } from "../models/user.js";
+
 
 export const usersService = {
   async findAll() {
@@ -22,4 +23,13 @@ export const usersService = {
 
     return created;
   },
+
+  async crear() {
+    await User.destroy({
+      where: {}, // видалити всі рядки
+      truncate: false
+    })
+
+    return true;
+  }
 };

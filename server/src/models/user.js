@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../utils/db.js';
+import { sequelize } from '../utils/db.js'
 
 export const User = sequelize.define(
   'Users',
@@ -15,5 +15,5 @@ export const User = sequelize.define(
       allowNull: false,
     },
   },
-  { tableName: 'users' },
+  { tableName: 'users', updatedAt: false, createdAt: false },
 );

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { usersRouter } from '../routers/usersRouter.js';
+import { usersRouter } from './routers/usersRouter.js';
+import { roomsRouter } from './routers/roomsRouter.js';
 
 export function createServer() {
   const server = express();
@@ -12,6 +13,8 @@ export function createServer() {
   });
 
   server.use('/', usersRouter);
+
+  server.use('/', roomsRouter);
 
   return server;
 }

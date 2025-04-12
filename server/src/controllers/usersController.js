@@ -21,10 +21,10 @@ async function checkOne(req, res) {
   const userName = req.params.name;
 
   try {
-    const isExist = await usersService.getOne(userName);
+    const existUser = await usersService.getOne(userName);
 
-    if (isExist) {
-      res.status(407).json('This user already exist');
+    if (existUser) {
+      res.status(200).json(existUser.name);
 
       return;
     }
@@ -62,8 +62,15 @@ async function createNew(req, res) {
   }
 }
 
+async function crearAll(req, res) {
+  await usersService.crear();
+
+  res.send(204);
+}
+
 export const usersController = {
   getAll,
   checkOne,
   createNew,
+  crearAll,
 };

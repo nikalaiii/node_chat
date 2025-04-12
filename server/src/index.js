@@ -1,12 +1,14 @@
 import { createServer } from './createServer.js';
 import dotenv from 'dotenv';
+import { initWebSocket } from './socket/wss.js';
 
 dotenv.config();
 
-const server = createServer();
-
+export const app = createServer();
 const port = process.env.PORT ?? 3000;
 
-server.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server activated on: ${port}`);
 });
+
+initWebSocket(server);

@@ -22,6 +22,7 @@
     "@mate-academy/scripts": "^2.1.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/ws": "^8.18.1",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-plugin-jest": "^28.6.0",
@@ -34,11 +35,13 @@
   },
   "dependencies": {
     "axios": "^1.8.4",
+    "classnames": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "ws": "^8.18.1"
   }
 }
