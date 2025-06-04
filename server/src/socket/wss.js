@@ -14,32 +14,40 @@ export function initWebSocket(server) {
 
     client.on('message', async (data) => {
       let parsed;
+
       try {
         parsed = JSON.parse(data);
       } catch {
         client.send(JSON.stringify({ error: 'Invalid JSON' }));
+
         return client.close();
       }
 
       if (parsed.type === 'join') {
         try {
           const currentRoom = await roomsService.getById(parsed.roomId);
+
           if (!currentRoom) {
             client.send(JSON.stringify({ error: 'Room not found' }));
+
             return client.close();
           }
 
           const currentUser = await usersService.getOne(parsed.name);
+
           if (!currentUser) {
             client.send(JSON.stringify({ error: 'User not found' }));
+
             return client.close();
           }
 
           const userHasAccess = currentRoom.users.includes(parsed.name);
+
           if (!userHasAccess) {
             client.send(
               JSON.stringify({ error: 'Access denied to this room' }),
             );
+
             return client.close();
           }
 
@@ -51,6 +59,7 @@ export function initWebSocket(server) {
 
           const allMessages = await roomsService.getMessages(parsed.roomId);
           const roomInfo = await roomsService.getById(parsed.roomId);
+
           client.send(
             JSON.stringify({
               type: 'start_connect',
@@ -61,17 +70,21 @@ export function initWebSocket(server) {
         } catch (err) {
           console.error('Error in join logic:', err.message);
           client.send(JSON.stringify({ error: 'Internal server error' }));
+
           return client.close();
         }
       } else if (parsed.type === 'message') {
         const isClient = clientRooms.has(client);
+
         if (!isClient) {
           client.send('Client does not have access to socket');
+
           return client.close();
         }
 
         if (!parsed.user || !parsed.roomId || !parsed.text) {
           client.send('Invalid data request');
+
           return client.close();
         }
 
@@ -81,11 +94,13 @@ export function initWebSocket(server) {
             parsed.user,
             parsed.text,
           );
+
           if (newMessage) {
             const emitterMessage = {
               ...newMessage,
               roomId: parsed.roomId,
             };
+
             messageEmitter.emit('message', emitterMessage);
           }
         } catch (err) {
@@ -122,6 +137,7 @@ export function initWebSocket(server) {
 
   roomsEmitter.on('changed', (changedRoom) => {
     console.log(`EMITTER REACTION | ID: ${changedRoom.id}`)
+
     for (const client of wss.clients) {
       if (clientRooms.get(client) === changedRoom.id) {
         console.log('SOCKET SEND')

@@ -3,6 +3,7 @@ import styles from './Chat.module.scss';
 import { useParams } from 'react-router-dom';
 import { Message } from './components/Message';
 import axios from 'axios';
+import { AppBar, Box, Container, Toolbar } from '@mui/material';
 
 interface Message {
   name: string;
@@ -94,92 +95,109 @@ export const Chat: React.FC = () => {
   };
 
   return (
-    <div className={styles.chat}>
-      {info && (
-        <div className={styles.info}>
-          <img src='images/groups.png' className={styles.info__image} alt='Room logo' />
-          <h2 className={styles.info__title}>{info.name}</h2>
-          <strong className={styles.info__id}>{info.id}</strong>
-          <p
-            className={styles.info__users}
-          >{`Users: ${info.users.length}/${info.limit}`}</p>
+    <Container sx={{ width: '100vw', height: '100vh', display: 'flex' }}>
+      <Box
+        sx={{ marginInline: 'auto', }}
 
-          {info.admin === userName && (
-            <button
-              onClick={() => setOnSettings((prev) => !prev)}
-              className={styles.info__settings}
-            >
-              settings
-            </button>
-          )}
+      >
+        {info && (
+          <Toolbar
+            sx={{
+              bgcolor: '#00897b',
+            }}
+          >
+            <img
+              src="images/groups.png"
+              className={styles.info__image}
+              alt="Room logo"
+            />
+            <h2 className={styles.info__title}>{info.name}</h2>
+            <strong className={styles.info__id}>{info.id}</strong>
+            <p
+              className={styles.info__users}
+            >{`Users: ${info.users.length}/${info.limit}`}</p>
+
+            {info.admin === userName && (
+              <button
+                onClick={() => setOnSettings((prev) => !prev)}
+                className={styles.info__settings}
+              >
+                settings
+              </button>
+            )}
+          </Toolbar>
+        )}
+        <div className={styles.chat__messages}>
+          {messages.map((msg, index) => (
+            <Message
+              key={index}
+              user={msg.name}
+              text={msg.text}
+              date={msg.date}
+              isPeronal={msg.name === userName}
+            />
+          ))}
         </div>
-      )}
-      <div className={styles.chat__messages}>
-        {messages.map((msg, index) => (
-          <Message
-          key={index}
-            user={msg.name}
-            text={msg.text}
-            date={msg.date}
-            isPeronal={msg.name === userName}
+        <form className={styles.chat__form} onSubmit={handleSubmit}>
+          <input
+            className={styles.chat__form__input}
+            type="text"
+            placeholder="enter a message"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
           />
-        ))}
-      </div>
-      <form className={styles.chat__form} onSubmit={handleSubmit}>
-        <input
-          className={styles.chat__form__input}
-          type="text"
-          placeholder="enter a message"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <button className={styles.chat__form__button} type="submit">
-          Send
-        </button>
-      </form>
-      {onSettings && (
-        <div className={styles.settings}>
-          <button onClick={() => handleSettingsSubmit('delete', roomId ?? 'undefined')}>
-            Delete room
+          <button className={styles.chat__form__button} type="submit">
+            Send
           </button>
+        </form>
+        {onSettings && (
+          <div className={styles.settings}>
+            <button
+              onClick={() =>
+                handleSettingsSubmit('delete', roomId ?? 'undefined')
+              }
+            >
+              Delete room
+            </button>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSettingsSubmit('rename', settingsValue);
-            }}
-          >
-            <label>
-              <h4>Rename room</h4>
-              <input
-                type="text"
-                value={settingsValue}
-                onChange={(e) => setSettingsValue(e.target.value)}
-                placeholder="enter new room name"
-              />
-            </label>
-            <button type="submit">submit</button>
-          </form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSettingsSubmit('rename', settingsValue);
+              }}
+            >
+              <label>
+                <h4>Rename room</h4>
+                <input
+                  type="text"
+                  value={settingsValue}
+                  onChange={(e) => setSettingsValue(e.target.value)}
+                  placeholder="enter new room name"
+                />
+              </label>
+              <button type="submit">submit</button>
+            </form>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSettingsSubmit('deleteUser', settingsValue);
-            }}
-          >
-            <label>
-              <h4>Delete user</h4>
-              <input
-                type="text"
-                value={settingsValue}
-                onChange={(e) => setSettingsValue(e.target.value)}
-                placeholder="enter user ID"
-              />
-            </label>
-            <button type="submit">submit</button>
-          </form>
-        </div>
-      )}
-    </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSettingsSubmit('deleteUser', settingsValue);
+              }}
+            >
+              <label>
+                <h4>Delete user</h4>
+                <input
+                  type="text"
+                  value={settingsValue}
+                  onChange={(e) => setSettingsValue(e.target.value)}
+                  placeholder="enter user ID"
+                />
+              </label>
+              <button type="submit">submit</button>
+            </form>
+          </div>
+        )}
+      </Box>
+    </Container>
   );
 };

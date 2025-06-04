@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import styles from './Registration.module.scss';
 import { checkAuth } from '../../functions/checkAuth.ts';
+import { Container, TextField } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import LaunchIcon from '@mui/icons-material/Launch';
+import ChatIcon from '@mui/icons-material/Chat';
+import { Link } from '@mui/material';
 
 interface Props {
   onSubmit: (v: boolean) => void;
@@ -19,20 +29,70 @@ export const Registration: React.FC<Props> = ({ onSubmit, onLoading }) => {
     }
   };
   return (
-    <form className={styles.form} onSubmit={(event) => handleSubmit(event)}>
-      <h3 className={styles.formTitle}>Enter your name</h3>
-      <input
-        className={styles.nameInput}
-        type="text"
-        value={name ?? ''}
-        placeholder="Enter your name"
-        onChange={(e) => {
-          setName(e.target.value);
+    <Container
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography  variant="h6" component="div" sx={{ flexGrow: 1, fontFamily: "'Space Grotesk', sans-serif" }}>
+            Node Chat
+            <ChatIcon />
+          </Typography>
+
+          <Link
+            target="_blank"
+            href="https://github.com/nikalaiii/node_chat/tree/develop"
+            color="inherit"
+          >
+            GitHub Repository
+          </Link>
+          <LaunchIcon />
+        </Toolbar>
+      </AppBar>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
-      />
-      <button className={styles.submitButton} type="submit">
-        Login
-      </button>
-    </form>
+      >
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            maxWidth: 400,
+            gap: 16,
+          }}
+        >
+          <Typography variant='h5' sx={{ fontFamily: "'Space Grotesk', sans-serif" }} >Enter your name</Typography>
+          <TextField
+            label="Your Name"
+            variant="standard"
+            value={name ?? ''}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Button variant="contained" color="success" type="submit">
+            Login
+          </Button>
+        </form>
+      </Box>
+    </Container>
   );
 };

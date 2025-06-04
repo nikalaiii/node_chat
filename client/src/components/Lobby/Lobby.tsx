@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Lobby.module.scss';
 import { requestCreateRoom } from '../../functions/requestCreateRoom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { requestJoinRoom } from '../../functions/requestJoinRoom';
+import {
+  AppBar,
+  Container,
+  Button,
+  Typography,
+  Avatar,
+  Toolbar,
+  ButtonGroup,
+  TextField,
+  Box,
+} from '@mui/material';
+
+import LaunchIcon from '@mui/icons-material/Launch';
+import ErrorIcon from '@mui/icons-material/Error';
 
 type LobbyState = 'create' | 'join' | null;
 
@@ -50,77 +63,134 @@ export const Lobby: React.FC = () => {
   }, [error]);
 
   useEffect(() => {
-    console.log('lobby changed' + lobbyState)
-  }, [lobbyState])
+    console.log('lobby changed' + lobbyState);
+  }, [lobbyState]);
 
   return (
-    <div className={styles.lobby}>
-      {error && <div className={styles.error}>{error}</div>}
-      <div className={styles.lobby__user}>
-        <img src='/images/user2.png' className={styles.lobby_userLogo} alt='User Avatar'/>
-        <strong style={{ color: '#000' }} className={styles.lobby__userName}>{userName}</strong>
-      </div>
-      <div className={styles.lobby__buttons}>
-        <button
+    <Container
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
+      {error && (
+  <Box
+    sx={{
+      position: 'absolute',
+      top: '10%',
+      left: '10%',
+      transform: 'translateX(-50%)',
+      bgcolor: 'error.main',
+      color: 'white',
+      px: 3,
+      py: 2,
+      borderRadius: 2,
+      boxShadow: 3,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 1,
+      zIndex: 999,
+    }}
+  >
+    <ErrorIcon />
+    <Typography variant="body1">{error}</Typography>
+  </Box>
+)}
+
+      <AppBar sx={{ minHeight: '60px' }} position="static">
+        <Toolbar>
+          <Avatar alt="Remy Sharp" src="/images/user2.png" />
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            {userName}
+          </Typography>
+
+          <Link
+            target="_blank"
+            href="https://github.com/nikalaiii/node_chat/tree/develop"
+            color="white"
+          >
+            GitHub Repository
+          </Link>
+          <LaunchIcon />
+        </Toolbar>
+      </AppBar>
+
+      <ButtonGroup sx={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '20px'}} variant="outlined" aria-label="Basic button group">
+        <Button
           onClick={() => setLobbyState('create')}
-          className={styles.button}
         >
           Create a new Room
-        </button>
-        <button
-          onClick={() => setLobbyState('join')}
-          className={styles.button}
-        >
+        </Button>
+        <Button onClick={() => setLobbyState('join')}>
           Join to room
-        </button>
-      </div>
+        </Button>
+      </ButtonGroup>
+
+      <Typography>
+        Hello, this is your personal account, here you can join an existing
+        room, or create a new one, you can read detailed information about your
+        account by clicking on your avatar
+      </Typography>
       {lobbyState && (
-        <form
-          className={styles.lobbyForm}
+        <form style={{ minWidth: '50%', display: 'flex', flexDirection: 'column', gap: '1.3rem'}}
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}
         >
-          <h2 className={styles.formTitle}>
+          <Typography
+            variant="h4"
+            sx={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
             {lobbyState === 'create' ? 'Create a new Room' : 'Join to room'}
-          </h2>
+          </Typography>
           <label>
-            <h3 className={styles.inputTitle}>
+            <Typography
+              variant="h6"
+              sx={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
               {lobbyState === 'create'
                 ? 'Enter your room name'
                 : 'Enter room ID'}
-            </h3>
-            <input
-              className={styles.formInput}
+            </Typography>
+            <TextField
+              label="Room Name"
+              variant="standard"
               placeholder={
                 lobbyState === 'create' ? 'enter room name' : 'enter room id'
               }
-              type="text"
               value={inputValue ?? ''}
               onChange={(e) => setInputValue(e.target.value)}
             />
           </label>
           {lobbyState === 'create' && (
             <label>
-              <h3 className={styles.inputTitle}>Select count of users limit</h3>
-              <select
-                className={styles.select}
+              <Typography  sx={{ fontFamily: "'Space Grotesk', sans-serif" }} >Select count of users limit</Typography>
+              <TextField
+              variant="standard"
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: '1.5rem',
+                  },
+                }}
+                type="number"
                 onChange={(e) => setInputLimit(Number(e.target.value))}
-              >
-                <option value={2}>2</option>
-                <option value={4}>4</option>
-                <option value={6}>6</option>
-                <option value={8}>8</option>
-                <option value={10}>10</option>
-              </select>
+                inputProps={{ min: 2, max: 10 }}
+                label="Users limit"
+              />
             </label>
           )}
-          <button className={styles.button} type="submit">
+          <Button sx={{ width: '400px'}} color='success' variant='contained' type="submit">
             {lobbyState === 'create' ? 'Create room' : 'Join to room'}
-          </button>
+          </Button>
         </form>
       )}
-    </div>
+    </Container>
   );
 };

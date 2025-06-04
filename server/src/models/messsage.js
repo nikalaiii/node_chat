@@ -29,7 +29,7 @@ export const Message = sequelize.define(
   },
   {
     tableName: 'messages',
-    createdAt: 'createdAt', 
-    updatedAt: false, 
+    createdAt: 'createdAt',
+    updatedAt: false,
   },
 );
